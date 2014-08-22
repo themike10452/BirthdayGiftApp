@@ -15,6 +15,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import lb.themike10452.birthdaygift.Private.Exceptions;
+
 /**
  * Created by Mike on 7/10/2014.
  */
@@ -64,8 +66,13 @@ public class Fragment1 extends Fragment implements Identifier {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (charSequence.toString().equalsIgnoreCase(getString(R.string.the_name)))
+                if (Exceptions.isVanessa()) {
+                    if (charSequence.toString().equalsIgnoreCase(getString(R.string.the_name))) {
+                        proceed();
+                    }
+                } else if (Exceptions.isTrusted(charSequence)) {
                     proceed();
+                }
             }
 
             @Override

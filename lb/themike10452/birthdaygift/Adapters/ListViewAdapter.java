@@ -23,6 +23,7 @@ import lb.themike10452.birthdaygift.R;
 public class ListViewAdapter extends ArrayAdapter<Entry> {
 
     public static ListViewAdapter instance;
+    public ArrayList<View> buttons;
     public ArrayList<Entry> obj;
     private Context mContext;
 
@@ -31,11 +32,12 @@ public class ListViewAdapter extends ArrayAdapter<Entry> {
         obj = objects;
         mContext = context;
         instance = this;
+        buttons = new ArrayList<View>();
     }
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-        super.getView(position, view, parent);
+        //super.getView(position, view, parent);
         View mView = view;
         if (mView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -80,8 +82,14 @@ public class ListViewAdapter extends ArrayAdapter<Entry> {
 
                         for (int i = 0; i < obj.size(); i++) {
                             MediaPlayer temp;
-                            if ((temp = obj.get(i).sound) != null && temp.isPlaying())
+                            if ((temp = obj.get(i).sound) != null && temp.isPlaying()) {
                                 temp.pause();
+                                try {
+                                    buttons.get(i).setBackground(getContext().getResources().getDrawable(R.drawable.ic_action_play));
+                                } catch (Exception ignored) {
+                                } catch (Error ignored) {
+                                }
+                            }
                         }
 
                         final BigPlayer bigPlayer = BigPlayer.getInstance();
@@ -106,9 +114,9 @@ public class ListViewAdapter extends ArrayAdapter<Entry> {
                                     }
                                 }, 300);
 
-
                                 if (bigPlayer != null)
                                     bigPlayer.fadeIn();
+
                             }
                         });
 
@@ -149,8 +157,23 @@ public class ListViewAdapter extends ArrayAdapter<Entry> {
                                     seekBar.setProgress(thisPlayer.getCurrentPosition());
                                 }
 
-                                if (bigPlayer != null)
-                                    bigPlayer.fadeIn();
+                                view.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (bigPlayer != null) {
+                                            boolean b = true;
+                                            for (Entry anObj : obj) {
+                                                MediaPlayer temp;
+                                                if ((temp = anObj.sound) != null && temp.isPlaying()) {
+                                                    b = false;
+                                                    break;
+                                                }
+                                            }
+                                            if (b)
+                                                bigPlayer.fadeIn();
+                                        }
+                                    }
+                                }, 300);
 
                                 return null;
                             }
